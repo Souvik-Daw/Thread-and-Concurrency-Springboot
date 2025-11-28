@@ -66,3 +66,25 @@ Check if value is still what I saw.
 If yes → update.
 If no → someone changed it → retry(get new value and updates).
 
+🔹 ThreadPoolTaskExecutor -> It is a thread pool used in Spring Boot to run tasks in background threads.
+corePoolSize = 5 -> New tasks first go into these 5 threads, active forever
+queueCapacity = 10 -> First 5 tasks → run in core threads,Next 10 tasks → stored in queue,After queue is full → then new threads (beyond core) are created
+maxPoolSize = 20 -> Spring can create at most 20 threads,Only used when queue is full,After work is complete, extra threads die
+@EnableAsync + @Async -> Method run on multiple threads
+👉 Meaning:More task after the maxpool is rejected 
+
+🔹 CompletableFuture<String> -> CompletableFuture<String> is a Java class that represents a 
+future result of an asynchronous computation that will eventually produce a String.
+->thenApply
+CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> 10)
+    .thenApply(n -> n * 2); // transforms 10 → 20
+System.out.println(future.join()); // 20
+->thenCombine
+CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> 10);
+CompletableFuture<Integer> f2 = CompletableFuture.supplyAsync(() -> 20);
+CompletableFuture<Integer> sum = f1.thenCombine(f2, (a, b) -> a + b);
+System.out.println(sum.join()); // 30
+->thenRun
+CompletableFuture.supplyAsync(() -> "Task Done")
+    .thenRun(() -> System.out.println("All done!"));
+👉 Can use it inplace of ThreadPoolTaskExecutor
