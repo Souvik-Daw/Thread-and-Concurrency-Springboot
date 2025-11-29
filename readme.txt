@@ -88,3 +88,33 @@ System.out.println(sum.join()); // 30
 CompletableFuture.supplyAsync(() -> "Task Done")
     .thenRun(() -> System.out.println("All done!"));
 👉 Can use it inplace of ThreadPoolTaskExecutor
+
+🔹 Isolation level controls problems:
+Dirty Read → reading uncommitted data  ->  @Transactional(isolation = Isolation.READ_COMMITTED)
+Non-repeatable Read → row changed between two reads  ->  @Transactional(isolation = Isolation.REPEATABLE_READ)
+Phantom Read → number of rows changed  ->  @Transactional(isolation = Isolation.SERIALIZABLE)
+Lost Update → one update overrides another
+👉 Problem caused in DB layers by different threads
+
+🔹 Optimistic Locking (Fix Lost Update)
+Optimistic locking uses a @Version field on a row.
+When two threads read the same row and try to update it:
+First update succeeds and increases the version.
+Second update fails because the version has changed.
+👉 This prevents lost updates without using DB locks → high scalability.
+
+🔹 Pessimistic Locking (Fix Lost Update)
+Pessimistic Locking (SELECT … FOR UPDATE)
+A database-level lock that blocks other transactions from modifying a row until the current transaction finishes.
+Used when you assume conflicts WILL happen and want strict safety.
+👉 Think of it as:
+“Lock the row now. Others wait.”
+
+🔹 Concurrent Collections:
+Thread-safe collection classes in java.util.concurrent that allow multiple threads to read and 
+write without corrupting data or throwing ConcurrentModificationException. 
+Examples: 
+ConcurrentHashMap
+CopyOnWriteArrayList 
+ConcurrentLinkedQueue
+👉 Thread safe version of then self, no manual work
