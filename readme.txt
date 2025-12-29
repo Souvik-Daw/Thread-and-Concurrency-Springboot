@@ -122,10 +122,11 @@ ConcurrentLinkedQueue
 🔹 WebFlux
 Spring WebFlux provides FastAPI-style async/non-blocking APIs in Java using reactive streams and an event-loop model.
 If a code is waiting for other api/operation response the thread meanwhile process other request. 
-@GetMapping
-public Flux<Blog> getAllBlogs() {
-    return blogRepository.findAll();
+// Single blog creation
+public Mono<Blog> createBlog(BlogRequest request) {
+    return blogService.save(request); // may return one Blog
 }
-public Mono<Blog> createBlog(...) {
-    return blogService.save(request);
+// Multiple blogs fetch
+public Flux<Blog> getAllBlogs() {
+    return blogRepository.findAll(); // may return many Blogs
 }
