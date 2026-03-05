@@ -41,3 +41,21 @@ public class RaceConditionDemo {
         System.out.println("Final SAFE Counter   = " + obj.safeCounter);
     }
 }
+
+
+/*
+synchronized (firstLock) {         // Keep lock 1 closed
+    synchronized (secondLock) {    // Keep lock 2 closed 
+        // Now BOTH wallets are locked.
+        // We can safely deduct and add without anyone seeing the "in-between" state.
+        if (w1.deduct(amount)) {
+            w2.add(amount);
+        }
+    } // Unlock lock 2
+} // Unlock lock 1
+
+synchronized(object obj)
+
+can obtain lock on one object and variables also, its not limited to methods.
+But maintain a global sequence of locking
+*/
