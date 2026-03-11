@@ -36,6 +36,7 @@ When one thread updates the value, other threads will see the new value immediat
 🔹 synchronized
 Only one thread can access the code block at a time.
 Prevents multiple threads from modifying shared data at the same time.
+alao use distributed lock incase of microservice 
 👉 Like only one person allowed inside the washroom at a time — others must wait.
 
 🔹 Race Condition
@@ -130,3 +131,17 @@ public Mono<Blog> createBlog(BlogRequest request) {
 public Flux<Blog> getAllBlogs() {
     return blogRepository.findAll(); // may return many Blogs
 }
+
+persistent lock in db 
+BEGIN;
+
+SELECT *
+FROM orders
+WHERE id = 10
+FOR UPDATE;
+
+UPDATE orders
+SET status = 'SHIPPED'
+WHERE id = 10;
+
+COMMIT;
