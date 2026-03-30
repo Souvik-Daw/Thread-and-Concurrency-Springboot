@@ -36,7 +36,7 @@ When one thread updates the value, other threads will see the new value immediat
 🔹 synchronized
 Only one thread can access the code block at a time.
 Prevents multiple threads from modifying shared data at the same time.
-alao use distributed lock incase of microservice 
+also use a distributed lock in case of microservice 
 👉 Like only one person allowed inside the washroom at a time — others must wait.
 
 🔹 Race Condition
