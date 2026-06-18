@@ -108,6 +108,19 @@ Second update fails because the version has changed.
 Pessimistic Locking (SELECT … FOR UPDATE)
 A database-level lock that blocks other transactions from modifying a row until the current transaction finishes.
 Used when you assume conflicts WILL happen and want strict safety.
+persistent lock in db 
+BEGIN;
+
+SELECT *
+FROM orders
+WHERE id = 10
+FOR UPDATE;
+
+UPDATE orders
+SET status = 'SHIPPED'
+WHERE id = 10;
+
+COMMIT;
 👉 Think of it as:
 “Lock the row now. Others wait.”
 
@@ -132,16 +145,125 @@ public Flux<Blog> getAllBlogs() {
     return blogRepository.findAll(); // may return many Blogs
 }
 
-persistent lock in db 
-BEGIN;
+🔹 Concurrent Collections:
+Thread-safe collection classes in java.util.concurrent that allow multiple threads to safely 
+read/write data concurrently without corrupting state or throwing ConcurrentModificationException.
+👉 Designed for high concurrency with minimal locking.
+👉 Better performance than wrapping collections with Collections.synchronizedXxx().
+👉 Most are non-blocking or use fine-grained locking.
 
-SELECT *
-FROM orders
-WHERE id = 10
-FOR UPDATE;
+🔹 ConcurrentHashMap
+A thread-safe version of HashMap optimized for concurrent access.
+Features:
+Multiple threads can read/write simultaneously.
+Uses bucket-level locking / CAS internally instead of locking entire map.
+Iterators are weakly consistent:
+No ConcurrentModificationException
+May reflect some updates during iteration
+ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
 
-UPDATE orders
-SET status = 'SHIPPED'
-WHERE id = 10;
+🔹 CopyOnWriteArrayList
+A thread-safe version of ArrayList.
+Internal Working:
+On every write operation:
+Creates a new copy of internal array
+Reads happen without locking
+Features:
+Very fast reads
+Safe iteration while modifying
+Iterators work on snapshot data
+Drawback:
+Expensive writes because whole array is copied
+Best For:
+Read-heavy, write-light applications
+👉 Thread-safe version of ArrayList optimized for reads.
 
-COMMIT;
+🔹 CopyOnWriteArraySet
+Thread-safe Set built internally using CopyOnWriteArrayList.
+Features:
+Snapshot-style iteration
+Thread-safe without manual locking
+Good for mostly-read scenarios
+Drawback:
+Slow writes due to copying
+👉 Thread-safe version of HashSet for read-heavy systems.
+
+🔹 ConcurrentLinkedQueue
+A non-blocking thread-safe queue based on linked nodes.
+Features:
+Uses CAS (Compare-And-Swap)
+FIFO ordering
+No locks
+High scalability
+👉 Thread-safe queue without blocking.
+
+🔹 ConcurrentLinkedDeque
+Thread-safe double-ended queue.
+Features:
+Insert/remove from both ends
+Non-blocking
+CAS based
+👉 Concurrent version of Deque.
+
+🔹 BlockingQueue
+Queue interface where threads can wait automatically.
+Features:
+Producer-consumer support
+Blocks when:
+queue empty during take()
+queue full during put()
+👉 Removes need for manual wait/notify.
+
+🔹 ArrayBlockingQueue
+Bounded blocking queue backed by array.
+Features:
+Fixed size
+Uses locks internally
+FIFO
+👉 Thread-safe bounded queue.
+
+🔹 LinkedBlockingQueue
+Blocking queue backed by linked nodes.
+Features:
+Optional capacity
+Higher throughput than ArrayBlockingQueue sometimes
+👉 Dynamically growing blocking queue.
+
+🔹 DelayQueue
+Queue where elements become available only after delay expires.
+Features:
+Elements must implement Delayed
+Used for scheduling
+👉 Time-based concurrent queue.
+
+🔹 SynchronousQueue
+Queue with zero capacity.
+Features:
+Producer waits until consumer receives item
+Direct handoff between threads
+👉 No storage, only thread-to-thread transfer.
+
+🔹 PriorityBlockingQueue
+Thread-safe version of PriorityQueue.
+Features:
+Elements ordered by priority
+Unbounded queue
+Non-FIFO ordering
+👉 Concurrent priority-based queue.
+
+🔹 ConcurrentSkipListMap
+Thread-safe sorted map.
+Features:
+Sorted keys
+Faster concurrent operations than synchronized TreeMap
+Uses skip-list data structure
+👉 Concurrent sorted map.
+
+🔹 ConcurrentSkipListSet
+Thread-safe sorted set.
+Features:
+Sorted ordering
+Non-blocking reads
+Skip-list based
+👉 Concurrent sorted set.
+
